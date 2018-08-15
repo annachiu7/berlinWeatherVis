@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<svg width="960" height="960"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+var temperatures = [];
+
+var svgContainer = d3.select("svg");
+var centerGroup = svgContainer.append('g')
+							  .attr('transform', 'translate(50,50)');
+var lowTempArcs = svgContainer.append('g')
+							 .attr('transform', 'translate(150,50)');
+var highTempArcs = svgContainer.append('g')
+							 .attr('transform', 'translate(150,50)');
+
+var line = centerGroup.append('line')
+					  .attr('x1', 50) // center circle outer ring
+					  .attr('y1', 0)
+					  .attr('x2', 100) // line length?? connecting centers or what we can see?
+					  .attr('y2', 0)
+					  .attr('stroke', '#444')
+					  .attr('stroke-width', '1px');
+
+var center_clr = centerGroup.append('circle')
+							.attr('r', 50)
+							.style('fill', '#444');
+
+var center_text = centerGroup.append('text')
+							.attr('text-anchor', 'middle')
+							.attr('alignment-baseline', 'middle')
+							.attr('fill', 'orange')
+							.text(function() {
+							 return 'berlin';
+							});
+
+var low_temp_arc = d3.arc()
+	.startAngle(0.5*Math.PI)
+	.endAngle(1.5*Math.PI)
+	.innerRadius(0)
+	.outerRadius(10);
+var high_temp_arc = d3.arc()
+	.startAngle(-0.5*Math.PI)
+	.endAngle(0.5*Math.PI)
+	.innerRadius(0)
+	.outerRadius(10);
+
+lowTempArcs.append("path").attr("d", low_temp_arc)
+						 .attr('fill', '#44a');
+highTempArcs.append("path").attr("d", high_temp_arc)
+						 .attr('fill', '#a44');
+
+</script>
+</body>
