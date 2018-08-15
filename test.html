@@ -49,7 +49,23 @@ var high_temp_arc = d3.arc()
 lowTempArcs.append("path").attr("d", low_temp_arc)
 						 .attr('fill', '#44a');
 highTempArcs.append("path").attr("d", high_temp_arc)
-						 .attr('fill', '#a44');
+						 .attr('fill', '#a44');7
+
+var temperature2 = 0;
+
+d3.csv('berlin-weather.csv', function(d) {
+
+	temperature2 = d.Temperature;
+
+  return {
+    temperature : d.Temperature,
+    day : d.Day
+  };
+}, function(data) {
+  console.log(data[0]);
+});
+
+console.log(temperature2);
 
 </script>
 </body>
