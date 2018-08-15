@@ -78,28 +78,35 @@ function calc_avgs(){
 	}, function(data) {
 
 		var final = []
-		var day = data[0].Day;
+		var day = data[0].day;
 		var j = 0;
 
+		var temperature_sum, sun_dur_sum, precipitation_sum;
+
 		data.forEach(function(d){
+			
+			console.log(data[j].day);
 
 			//deklarieren
-			if (d.Day == day) {
+			if (d.day == day) {
 				// addiere
 				temperature_sum += d.temperature;
 				sun_dur_sum += d.sunDur;
 				precipitation_sum += d.precipitation;
+				//console.log(d.sunDur);
+
 			}
 			else{
 				//teile, in arraya und 
 				final[j] = [temperature_sum / 24, sun_dur_sum / 24, precipitation_sum / 24];		
+				console.log(temperature_sum);
 
-				console.log(final[j]);
+				//console.log(final[j]);
 
 				temperature_sum = d.temperature;
 				sun_dur_sum = d.sunDur;
 				precipitation_sum = d.precipitation;			
-				j += 1;
+				j = j + 1;
 				day = data[j].Day;				
 			}
 		})
@@ -142,7 +149,6 @@ function calc_avgs(){
 		//return final;
 
 
-}
 
 </script>
 </body>
