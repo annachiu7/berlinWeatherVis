@@ -9,19 +9,13 @@ var temperatures = [];
 
 var svgContainer = d3.select("svg");
 var centerGroup = svgContainer.append('g')
-							  .attr('transform', 'translate(50,50)');
+							  .attr('transform', 'translate(500,500)');
 var lowTempArcs = svgContainer.append('g')
 							 .attr('transform', 'translate(150,50)');
 var highTempArcs = svgContainer.append('g')
 							 .attr('transform', 'translate(150,50)');
 
-var line = centerGroup.append('line')
-					  .attr('x1', 50) // center circle outer ring
-					  .attr('y1', 0)
-					  .attr('x2', 100) // line length?? connecting centers or what we can see?
-					  .attr('y2', 0)
-					  .attr('stroke', '#444')
-					  .attr('stroke-width', '1px');
+
 
 var center_clr = centerGroup.append('circle')
 							.attr('r', 50)
@@ -49,23 +43,26 @@ var high_temp_arc = d3.arc()
 lowTempArcs.append("path").attr("d", low_temp_arc)
 						 .attr('fill', '#44a');
 highTempArcs.append("path").attr("d", high_temp_arc)
-						 .attr('fill', '#a44');7
+						 .attr('fill', '#a44');
 
-var temperature2 = 0;
 
-d3.csv('berlin-weather.csv', function(d) {
-
-	temperature2 = d.Temperature;
-
+d3.csv("berlin-weather.csv", function(data) {
   return {
-    temperature : d.Temperature,
-    day : d.Day
+    windSpeed : +data["Wind Speed"],
+	windDir: +data["Wind Direction  [10 m above gnd]"]
   };
-}, function(data) {
-  console.log(data[0]);
+}, function(wind_speed_data) {
+  wind_speed_data.forEach(function(d){
+  var line = centerGroup.append('line')
+					  .attr('x1', 50) // center circle outer ring
+					  .attr('y1', 0)
+					  .attr('x2', d.windSpeed*50) // line length?? connecting centers or what we can see?
+					  .attr('y2', 0)
+					  .attr('stroke', '#444')
+					  .attr('stroke-width', '1px')
+					  .attr('transform', 'rotate('+ d.windDir +')')
+  })
 });
-
-console.log(temperature2);
 
 </script>
 </body>

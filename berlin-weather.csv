@@ -1,4 +1,4 @@
-Year,Month,Day,Hour,Minute,Temperature,Relative Humidity  [2 m above gnd],Mean Sea Level Pressure  [MSL],Total Precipitation  [sfc],Total Cloud Cover  [sfc],High Cloud Cover  [high cld lay],Medium Cloud Cover  [mid cld lay],Low Cloud Cover  [low cld lay],Sunshine Duration  [sfc],Shortwave Radiation  [sfc],Wind Speed  [10 m above gnd],Wind Direction  [10 m above gnd]
+Year,Month,Day,Hour,Minute,Temperature,Relative Humidity  [2 m above gnd],Mean Sea Level Pressure  [MSL],Total Precipitation  [sfc],Total Cloud Cover  [sfc],High Cloud Cover  [high cld lay],Medium Cloud Cover  [mid cld lay],Low Cloud Cover  [low cld lay],Sunshine Duration  [sfc],Shortwave Radiation  [sfc],Wind Speed,Wind Direction  [10 m above gnd]
 2018,7,9,0,0,20.51,68,1019.2,0,0,0,0,0,0,0,11.59,334.23
 2018,7,9,1,0,19.37,74,1019.4,0,0,0,0,0,0,0,10.59,342.18
 2018,7,9,2,0,18.28,79,1019,0,0,0,0,0,0,0,8.05,333.43
