@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<body style="background-color:midnightblue;">
+<body style="background-color:black;">
 <svg width="960" height="960"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
@@ -43,7 +43,7 @@ d3.csv("history_export_berlin-2018-08-15.csv", function(data) {
 		meanPreci: +data['Total Precipitation daily sum [sfc]'],
   };
 }, function(procData) {	//draws lines and circles of the "sun"
-  procData.forEach(generateLines);
+  procData.forEach(generateLinesTemprclrs);
   overall_mean_temp = calculate_mean_temp(procData);
 	overall_mean_preci = calculate_mean_preci(procData);
 
@@ -66,7 +66,33 @@ d3.csv("history_export_berlin-2018-08-15.csv", function(data) {
 var lines = centerGroup.append('g');			
 
 
-
+function generateLinesTemprclrs(d){
+  var line = lines.append('line')
+					  .attr('x1', 0) // center circle outer ring
+					  .attr('y1', 0)
+					  .attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
+					  .attr('y2', 0)
+					  .attr('stroke', '#ffd700')
+					  .attr('stroke-width', '1px')
+					  .attr('transform', 'rotate('+ d.windDir +')');
+  var low_temp_arc  = d3.arc()
+                        .startAngle(0.5*Math.PI)
+                        .endAngle(1.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(10);
+  var high_temp_arc = d3.arc()
+                        .startAngle(-0.5*Math.PI)
+                        .endAngle(0.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(10);
+  var one_tempr_clr = centerGroup.append('g')
+                                 .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
+  one_tempr_clr.append("path").attr("d", low_temp_arc)
+						 .attr('fill', '#44a');
+  one_tempr_clr.append("path").attr("d", high_temp_arc)
+						 .attr('fill', '#a44');                            
+  
+  }
 
 function generateLines(d){
   var line = lines.append('line')
