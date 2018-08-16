@@ -16,21 +16,9 @@ var temperatureGroup = centerGroup.append('g');
 
 
 
-// var low_temp_arc = d3.arc()
-// 	.startAngle(0.5*Math.PI)
-// 	.endAngle(1.5*Math.PI)
-// 	.innerRadius(0)
-// 	.outerRadius(10);
-// var high_temp_arc = d3.arc()
-// 	.startAngle(-0.5*Math.PI)
-// 	.endAngle(0.5*Math.PI)
-// 	.innerRadius(0)
-// 	.outerRadius(10);
 
-// lowTempArcs.append("path").attr("d", low_temp_arc)
-// 						 .attr('fill', '#44a');
-// highTempArcs.append("path").attr("d", high_temp_arc)
-// 						 .attr('fill', '#a44');
+
+
 
 
 d3.csv("history_export_berlin-2018-08-15.csv", function(data) {
@@ -40,7 +28,7 @@ d3.csv("history_export_berlin-2018-08-15.csv", function(data) {
     meanTempr: +data['Temperature daily mean [2 m above gnd]']
   };
 }, function(procData) {
-  procData.forEach(generateLines);
+  procData.forEach(generateLinesTemprclrs);
 });
 
 var lines = centerGroup.append('g');			
@@ -59,7 +47,7 @@ var center_text = centerGroup.append('text')
 							});
 
 
-function generateLines(d){
+function generateLinesTemprclrs(d){
   var line = lines.append('line')
 					  .attr('x1', 0) // center circle outer ring
 					  .attr('y1', 0)
@@ -67,7 +55,24 @@ function generateLines(d){
 					  .attr('y2', 0)
 					  .attr('stroke', '#444')
 					  .attr('stroke-width', '1px')
-					  .attr('transform', 'rotate('+ d.windDir +')')
+					  .attr('transform', 'rotate('+ d.windDir +')');
+  var low_temp_arc  = d3.arc()
+                        .startAngle(0.5*Math.PI)
+                        .endAngle(1.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(10);
+  var high_temp_arc = d3.arc()
+                        .startAngle(-0.5*Math.PI)
+                        .endAngle(0.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(10);
+  var one_tempr_clr = centerGroup.append('g')
+                                 .attr('transform','translate('+ d.windSpeed*10 +')')
+  one_tempr_clr.append("path").attr("d", low_temp_arc)
+						 .attr('fill', '#44a');
+  one_tempr_clr.append("path").attr("d", high_temp_arc)
+						 .attr('fill', '#a44');                            
+  
   }
 
 
