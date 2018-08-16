@@ -10,7 +10,7 @@ var centerGroup = svgContainer.append('g')
 							  .attr('transform', 'translate(500,200)');
 var temperatureGroup = centerGroup.append('g');
 
-d3.csv("data/berlin/daily.csv", function(data) {		// read daily data
+d3.csv("data/havanna/daily.csv", function(data) {		// read daily data
   return {
     windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
 	windDir: +data["Wind Direction daily mean [10 m above gnd]"],
@@ -64,7 +64,7 @@ function generateLinesTempcircs(d){
   }
 
 function calcMinMaxTemp(today, d) {
-	d3.csv('data/berlin/hourly.csv', function(hourlyData) {
+	d3.csv('data/havanna/hourly.csv', function(hourlyData) {
 		return {
 			day: +hourlyData['Day'],
 			temperature: +hourlyData['Temperature  [2 m above gnd]']
@@ -76,8 +76,9 @@ function calcMinMaxTemp(today, d) {
 				todayTemps.push(arr.temperature);
 			}
 		})
-		todayTemps = todayTemps.sort();
-		min_max_temp = [todayTemps[0], todayTemps[23]];
+		console.log(todayTemps)
+		min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
+		console.log(min_max_temp);
 
 		var low_temp_arc  = d3.arc()
                         .startAngle(0.5*Math.PI)
@@ -98,14 +99,14 @@ function calcMinMaxTemp(today, d) {
 	})
   }
 
+// hue 0 -------------- 250
+// clr rot ------------ dunkle blau
+// tem 40 ------------- -20
 function mapColor(temp) {
-	if(temp < 20) {
-		console.log('cold!!!!');
-		return "#44a";
-	} else {
-		console.log('warm!!!!')
-		return "#a44";
-	}
+	var color = -50/3/4 * temp + 500/3;
+	var hsl = "hsl("+ color +",100%,50%)"
+	console.log(temp + " " + hsl);
+	return hsl;
 }
 
 function generateLines(d){
