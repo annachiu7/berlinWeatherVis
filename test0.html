@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<body style="background-color:midnightblue;">
+<body style="background-color:black;">
 <svg width="960" height="960"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
@@ -9,72 +9,173 @@ var svgContainer = d3.select("svg");
 var centerGroup = svgContainer.append('g')
 							  .attr('transform', 'translate(500,200)');
 var temperatureGroup = centerGroup.append('g');
-// var lowTempArcs = svgContainer.append('g')
-// 							 .attr('transform', 'translate(150,50)');
-// var highTempArcs = svgContainer.append('g')
-// 							 .attr('transform', 'translate(150,50)');
 
-
-
-
-
-
-
-
-d3.csv("history_export_berlin-2018-08-15.csv", function(data) {
+d3.csv("data/berlin/daily.csv", function(data) {		// read daily data
   return {
     windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
 	windDir: +data["Wind Direction daily mean [10 m above gnd]"],
-    meanTempr: +data['Temperature daily mean [2 m above gnd]']
+    meanTempr: +data['Temperature daily mean [2 m above gnd]'],
+	meanPreci: +data['Total Precipitation daily sum [sfc]'],
+	day: +data['Day']
   };
-}, function(procData) {
-  procData.forEach(generateLinesTemprclrs);
+}, function(procData) {	//draws lines and circles of the "sun"
+  procData.forEach(generateLinesTempcircs);
+  overall_mean_temp = calculate_mean_temp(procData);
+	overall_mean_preci = calculate_mean_preci(procData);
+
+	var outer_ring_circ = centerGroup.append('circle')
+							.attr('r', overall_mean_temp + overall_mean_preci*10)
+							.style('fill', '#add8e6');
+
+    var center_circ = centerGroup.append('circle')
+							.attr('r', overall_mean_temp)
+							.style('fill', '#ffd700');
+	var center_text = centerGroup.append('text')
+							.attr('text-anchor', 'middle')
+							.attr('alignment-baseline', 'middle')
+							.attr('fill', 'black')
+							.text(function() {
+							 return 'Berlin';
+							});
 });
+
+
 
 var lines = centerGroup.append('g');			
 
 
-var center_clr = centerGroup.append('circle')
-							.attr('r', 30)
-							.style('fill', '#444');
-
-var center_text = centerGroup.append('text')
-							.attr('text-anchor', 'middle')
-							.attr('alignment-baseline', 'middle')
-							.attr('fill', 'orange')
-							.text(function() {
-							 return 'berlin';
-							});
-
-
-function generateLinesTemprclrs(d){
+function generateLinesTempcircs(d){
+  var today = d.day
   var line = lines.append('line')
 					  .attr('x1', 0) // center circle outer ring
 					  .attr('y1', 0)
 					  .attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
 					  .attr('y2', 0)
-					  .attr('stroke', '#444')
+					  .attr('stroke', '#fff')
 					  .attr('stroke-width', '1px')
 					  .attr('transform', 'rotate('+ d.windDir +')');
-  var low_temp_arc  = d3.arc()
-                        .startAngle(0.5*Math.PI)
-                        .endAngle(1.5*Math.PI)
-                        .innerRadius(0)
-                        .outerRadius(10);
-  var high_temp_arc = d3.arc()
-                        .startAngle(-0.5*Math.PI)
-                        .endAngle(0.5*Math.PI)
-                        .innerRadius(0)
-                        .outerRadius(10);
-  var one_tempr_clr = centerGroup.append('g')
-                                 .attr('transform','translate('+ d.windSpeed*10 +')')
-  one_tempr_clr.append("path").attr("d", low_temp_arc)
-						 .attr('fill', '#44a');
-  one_tempr_clr.append("path").attr("d", high_temp_arc)
-						 .attr('fill', '#a44');                            
+  
+ 
+  
+  calcMinMaxTemp(today, d);                     
   
   }
 
+function calcMinMaxTemp(today, d) {
+	d3.csv('data/berlin/hourly.csv', function(hourlyData) {
+		return {
+			day: +hourlyData['Day'],
+			temperature: +hourlyData['Temperature  [2 m above gnd]']
+		};
+	}, function(hourlyTemp) {
+		var todayTemps = [];
+		hourlyTemp.forEach(function(arr) {
+			if (today == arr.day) {
+				todayTemps.push(arr.temperature);
+			}
+		})
+		console.log(todayTemps)
+		min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
+		console.log(min_max_temp);
+
+		var low_temp_arc  = d3.arc()
+                        .startAngle(0.5*Math.PI)
+                        .endAngle(1.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(15);
+  		var high_temp_arc = d3.arc()
+                        .startAngle(-0.5*Math.PI)
+                        .endAngle(0.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(15);
+		var one_tempr_clr = centerGroup.append('g')
+                                 .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
+		one_tempr_clr.append("path").attr("d", low_temp_arc)
+             .attr('fill', mapColor(min_max_temp[0]))
+             .style('stroke','white')
+             .style('stroke-width','2px');
+  		one_tempr_clr.append("path").attr("d", high_temp_arc)
+             .attr('fill', mapColor(min_max_temp[1]))
+             .style('stroke','white')
+             .style('stroke-width','2px'); 
+	})
+  }
+
+// hue 0 -------------- 250
+// clr rot ------------ dunkle blau
+// tem 40 ------------- -20
+function mapColor(temp) {
+	var color = -50/3/4 * temp + 500/3;
+	var hsl = "hsl("+ color +",100%,50%)"
+	console.log(temp + " " + hsl);
+	return hsl;
+}
+
+function calculate_mean_temp(d){
+	var temperatureMean = d3.mean(d,function(a) { return +a.meanTempr});
+	return temperatureMean;
+}
+
+function calculate_mean_preci(d){
+	var preciMean = d3.mean(d,function(a) { return +a.meanPreci});
+	return preciMean;
+}
+
+function get_daily_lowest_tempr(d) {
+
+}
+
+
+/*
+function calc_dayly_avgs(){
+	d3.csv("hourly_test.csv", function(data) {
+  	return {
+  		temperature : +data["Temperature  [2 m above gnd]"],
+  		precipitation : +data["Total Precipitation  [sfc]"],
+  		sunDur : +data["Sunshine Sunshine Duration  [sfc]"],
+  		day : +data["Day"]
+  	};
+	}, function(data) {
+
+		var final = []
+		var day = data[0].day;
+		var j = 0;
+
+		var temperature_sum, sun_dur_sum, precipitation_sum;
+
+		data.forEach(function(d){
+			
+			console.log(d.day);
+			console.log(day);
+
+
+			//deklarieren
+			if (d.day == day) {
+				// addiere
+				temperature_sum += d.temperature;
+				sun_dur_sum += d.sunDur;
+				precipitation_sum += d.precipitation;
+				//console.log(d.temperature);
+
+			}
+			else{
+				//teile, in arraya und 
+				final[j] = [temperature_sum / 24, sun_dur_sum / 24, precipitation_sum / 24];		
+					//console.log(final[j]);
+
+				console.log(final[j]);
+
+				temperature_sum = d.temperature;
+				sun_dur_sum = d.sunDur;
+				precipitation_sum = d.precipitation;			
+				j = j + 1;
+				day = d.day;
+				console.log(day);				
+			}
+		})
+	})
+};
+*/
 
 </script>
 </body>
