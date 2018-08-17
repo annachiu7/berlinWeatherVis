@@ -11,6 +11,7 @@ var offset_x = 500;
 var offset_y = 200;
 var centerGroup = svgContainer.append('g')
 							  .attr('transform', 'translate(500,200)');
+<<<<<<< HEAD
 
 var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 						"shanghai", "singapur", "sydney", "weimar"];
@@ -60,9 +61,48 @@ for (let index = 0; index < citys.length; index++) {
 }
 
 
+=======
+var temperatureGroup = centerGroup.append('g');
+
+d3.csv("data/havanna/daily.csv", function(data) {		// read daily data
+  return {
+    windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
+	windDir: +data["Wind Direction daily mean [10 m above gnd]"],
+    meanTempr: +data['Temperature daily mean [2 m above gnd]'],
+	meanPreci: +data['Total Precipitation daily sum [sfc]'],
+	day: +data['Day']
+  };
+}, function(procData) {	//draws lines and circles of the "sun"
+  procData.forEach(generateLinesTempcircs);
+  overall_mean_temp = calculate_mean_temp(procData);
+	overall_mean_preci = calculate_mean_preci(procData);
+
+	var outer_ring_circ = centerGroup.append('circle')
+							.attr('r', overall_mean_temp + overall_mean_preci*10)
+							.style('fill', '#add8e6');
+
+    var center_circ = centerGroup.append('circle')
+							.attr('r', overall_mean_temp)
+							.style('fill', '#ffd700');
+	var center_text = centerGroup.append('text')
+							.attr('text-anchor', 'middle')
+							.attr('alignment-baseline', 'middle')
+							.attr('fill', 'black')
+							.text(function() {
+							 return 'Berlin';
+							});
+	
+
+});
 
 
-function generateLinesTemprclrs(d){
+
+var lines = centerGroup.append('g');			
+>>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
+
+
+function generateLinesTempcircs(d){
+  var today = d.day
   var line = lines.append('line')
 					  .attr('x1', 0) // center circle outer ring
 					  .attr('y1', 0)
@@ -71,28 +111,67 @@ function generateLinesTemprclrs(d){
 					  .attr('stroke', '#ffd700')
 					  .attr('stroke-width', '1px')
 					  .attr('transform', 'rotate('+ d.windDir +')');
-  var low_temp_arc  = d3.arc()
+  
+ 
+  
+  calcMinMaxTemp(today, d);                     
+  
+  }
+
+function calcMinMaxTemp(today, d) {
+	d3.csv('data/havanna/hourly.csv', function(hourlyData) {
+		return {
+			day: +hourlyData['Day'],
+			temperature: +hourlyData['Temperature  [2 m above gnd]']
+		};
+	}, function(hourlyTemp) {
+		var todayTemps = [];
+		hourlyTemp.forEach(function(arr) {
+			if (today == arr.day) {
+				todayTemps.push(arr.temperature);
+			}
+		})
+		console.log(todayTemps)
+		min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
+		console.log(min_max_temp);
+
+		var low_temp_arc  = d3.arc()
                         .startAngle(0.5*Math.PI)
                         .endAngle(1.5*Math.PI)
                         .innerRadius(0)
                         .outerRadius(10);
-  var high_temp_arc = d3.arc()
+  		var high_temp_arc = d3.arc()
                         .startAngle(-0.5*Math.PI)
                         .endAngle(0.5*Math.PI)
                         .innerRadius(0)
                         .outerRadius(10);
+<<<<<<< HEAD
   var one_tempr_clr = cityGroup.append('g')
+=======
+		var one_tempr_clr = centerGroup.append('g')
+>>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
                                  .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
-  one_tempr_clr.append("path").attr("d", low_temp_arc)
-						 .attr('fill', '#44a');
-  one_tempr_clr.append("path").attr("d", high_temp_arc)
-						 .attr('fill', '#a44');                            
-  
+		one_tempr_clr.append("path").attr("d", low_temp_arc)
+						 .attr('fill', mapColor(min_max_temp[0]));
+  		one_tempr_clr.append("path").attr("d", high_temp_arc)
+						 .attr('fill', mapColor(min_max_temp[1])); 
+	})
   }
 
+<<<<<<< HEAD
 
 function get_arc_color(d){
 
+=======
+// hue 0 -------------- 250
+// clr rot ------------ dunkle blau
+// tem 40 ------------- -20
+function mapColor(temp) {
+	var color = -50/3/4 * temp + 500/3;
+	var hsl = "hsl("+ color +",100%,50%)"
+	console.log(temp + " " + hsl);
+	return hsl;
+>>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
 }
 
 function generateLines(d){
@@ -116,6 +195,7 @@ function calculate_mean_preci(d){
 	return preciMean;
 }
 
+<<<<<<< HEAD
 function blackBodyColor(d)
 {
 		temp = d + 273.15;
@@ -154,6 +234,13 @@ function blackBodyColor(d)
 		var result = [R, G, B];
     return result;
 }
+=======
+function get_daily_lowest_tempr(d) {
+
+}
+
+
+>>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
 /*
 function calc_dayly_avgs(){
 	d3.csv("hourly_test.csv", function(data) {
