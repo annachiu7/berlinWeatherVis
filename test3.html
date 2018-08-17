@@ -15,10 +15,11 @@ var centerGroup = svgContainer.append('g')
 var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 						"shanghai", "singapur", "sydney", "weimar"];
 
+var lines; 
+var cityGroup;
 
 for (let index = 0; index < citys.length; index++) {
-	
-	var lines, cityGroup;
+
 
 	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {
 		return {
@@ -29,7 +30,7 @@ for (let index = 0; index < citys.length; index++) {
 		};
 	}, function(procData) {	//draws lines and circles of the "sun"
 
-	
+        console.log(procData.length);
 		cityGroup = centerGroup.append('g').attr('transform', 'translate(' + offset_x +','+ offset_y + ')');
 		lines = cityGroup.append('g');			
 
@@ -52,10 +53,10 @@ for (let index = 0; index < citys.length; index++) {
 								return 'Berlin';
 								});
 	});
-
+    console.log(offset_x);
 	offset_x += 10;
 	//offset_y += 200;
-	console.log(blackBodyColor(20));
+	//console.log(blackBodyColor(20));
 	
 }
 

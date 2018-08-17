@@ -7,42 +7,40 @@
 
 var svgContainer = d3.select("svg");
 
-var offset_x = 500;
-var offset_y = 200;
 var centerGroup = svgContainer.append('g')
 							  .attr('transform', 'translate(500,200)');
-<<<<<<< HEAD
 
-var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
+
+var citys = ["amundsen", "berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 						"shanghai", "singapur", "sydney", "weimar"];
 
 
-for (let index = 0; index < citys.length; index++) {
-	
+for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index++, offset_x += 10) {
 	var lines, cityGroup;
 
-	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {
+	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {		// read daily data
 		return {
 			windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
 			windDir: +data["Wind Direction daily mean [10 m above gnd]"],
 			meanTempr: +data['Temperature daily mean [2 m above gnd]'],
-			meanPreci: +data['Total Precipitation daily sum [sfc]']
+			meanPreci: +data['Total Precipitation daily sum [sfc]'],
+			day: +data['Day']
 		};
-	}, function(procData) {	//draws lines and circles of the "sun"
-
-	
+		}, function(procData) {	//draws lines and circles of the "sun"
+			
+		console.log(procData.length);
 		cityGroup = centerGroup.append('g').attr('transform', 'translate(' + offset_x +','+ offset_y + ')');
-		lines = cityGroup.append('g');			
-
-		procData.forEach(generateLinesTemprclrs);
+		lines= cityGroup.append('g');
+		
+		procData.forEach(generateLinesTempcircs);
 		overall_mean_temp = calculate_mean_temp(procData);
 		overall_mean_preci = calculate_mean_preci(procData);
 
-		var outer_ring_clr = cityGroup.append('circle')
+		var outer_ring_circ = cityGroup.append('circle')
 								.attr('r', overall_mean_temp + overall_mean_preci*3)
 								.style('fill', '#add8e6');
 
-		var center_clr = cityGroup.append('circle')
+		var center_circ = cityGroup.append('circle')
 								.attr('r', overall_mean_temp)
 								.style('fill', '#ffd700');
 		var center_text = cityGroup.append('text')
@@ -52,53 +50,13 @@ for (let index = 0; index < citys.length; index++) {
 								.text(function() {
 								return 'Berlin';
 								});
-	});
+		
 
-	offset_x += 10;
+	});
 	//offset_y += 200;
-	console.log(blackBodyColor(20));
-	
 }
 
-
-=======
-var temperatureGroup = centerGroup.append('g');
-
-d3.csv("data/havanna/daily.csv", function(data) {		// read daily data
-  return {
-    windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
-	windDir: +data["Wind Direction daily mean [10 m above gnd]"],
-    meanTempr: +data['Temperature daily mean [2 m above gnd]'],
-	meanPreci: +data['Total Precipitation daily sum [sfc]'],
-	day: +data['Day']
-  };
-}, function(procData) {	//draws lines and circles of the "sun"
-  procData.forEach(generateLinesTempcircs);
-  overall_mean_temp = calculate_mean_temp(procData);
-	overall_mean_preci = calculate_mean_preci(procData);
-
-	var outer_ring_circ = centerGroup.append('circle')
-							.attr('r', overall_mean_temp + overall_mean_preci*10)
-							.style('fill', '#add8e6');
-
-    var center_circ = centerGroup.append('circle')
-							.attr('r', overall_mean_temp)
-							.style('fill', '#ffd700');
-	var center_text = centerGroup.append('text')
-							.attr('text-anchor', 'middle')
-							.attr('alignment-baseline', 'middle')
-							.attr('fill', 'black')
-							.text(function() {
-							 return 'Berlin';
-							});
 	
-
-});
-
-
-
-var lines = centerGroup.append('g');			
->>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
 
 
 function generateLinesTempcircs(d){
@@ -131,9 +89,9 @@ function calcMinMaxTemp(today, d) {
 				todayTemps.push(arr.temperature);
 			}
 		})
-		console.log(todayTemps)
+		//console.log(todayTemps)
 		min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
-		console.log(min_max_temp);
+		//console.log(min_max_temp);
 
 		var low_temp_arc  = d3.arc()
                         .startAngle(0.5*Math.PI)
@@ -145,11 +103,7 @@ function calcMinMaxTemp(today, d) {
                         .endAngle(0.5*Math.PI)
                         .innerRadius(0)
                         .outerRadius(10);
-<<<<<<< HEAD
-  var one_tempr_clr = cityGroup.append('g')
-=======
-		var one_tempr_clr = centerGroup.append('g')
->>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
+		var one_tempr_clr = cityGroup.append('g')
                                  .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
 						 .attr('fill', mapColor(min_max_temp[0]));
@@ -158,20 +112,14 @@ function calcMinMaxTemp(today, d) {
 	})
   }
 
-<<<<<<< HEAD
-
-function get_arc_color(d){
-
-=======
 // hue 0 -------------- 250
 // clr rot ------------ dunkle blau
 // tem 40 ------------- -20
 function mapColor(temp) {
 	var color = -50/3/4 * temp + 500/3;
 	var hsl = "hsl("+ color +",100%,50%)"
-	console.log(temp + " " + hsl);
+	//console.log(temp + " " + hsl);
 	return hsl;
->>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
 }
 
 function generateLines(d){
@@ -195,52 +143,8 @@ function calculate_mean_preci(d){
 	return preciMean;
 }
 
-<<<<<<< HEAD
-function blackBodyColor(d)
-{
-		temp = d + 273.15;
-    var x = temp / 1000.0;
-    var x2 = x * x;
-    var x3 = x2 * x;
-    var x4 = x3 * x;
-    var x5 = x4 * x;
-
-    var R, G, B = 0;
-
-    // red
-    if (temp <= 6600){
-			R = 1;
-		}    
-    else{
-        R = 0.0002889 * x5 - 0.01258 * x4 + 0.2148 * x3 - 1.776 * x2 + 6.907 * x - 8.723;
-		}
-    // green
-    if (temp <= 6600){
-        G = -4.593e-05 * x5 + 0.001424 * x4 - 0.01489 * x3 + 0.0498 * x2 + 0.1669 * x - 0.1653;
-		}
-    else{
-        G = -1.308e-07 * x5 + 1.745e-05 * x4 - 0.0009116 * x3 + 0.02348 * x2 - 0.3048 * x + 2.159;
-		}
-    // blue
-    if (temp <= 2000){
-			B = 0;
-		}
-    else if (temp < 6600){
-        B = 1.764e-05 * x5 + 0.0003575 * x4 - 0.01554 * x3 + 0.1549 * x2 - 0.3682 * x + 0.2386;
-		}
-    else{
-        B = 1;
-		}
-		var result = [R, G, B];
-    return result;
-}
-=======
-function get_daily_lowest_tempr(d) {
-
-}
 
 
->>>>>>> 8403cc8579484e37166e049d3af8bf169db1a00c
 /*
 function calc_dayly_avgs(){
 	d3.csv("hourly_test.csv", function(data) {
