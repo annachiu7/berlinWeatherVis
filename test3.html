@@ -18,10 +18,12 @@ var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 var lines; 
 var cityGroup;
 
-for (let index = 0; index < citys.length; index++) {
-
+for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index++, offset_x+=10) {
+	
+	var lines, cityGroup;
 
 	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {
+		console.log(citys[index]);
 		return {
 			windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
 			windDir: +data["Wind Direction daily mean [10 m above gnd]"],
@@ -29,8 +31,9 @@ for (let index = 0; index < citys.length; index++) {
 			meanPreci: +data['Total Precipitation daily sum [sfc]']
 		};
 	}, function(procData) {	//draws lines and circles of the "sun"
-
-        console.log(procData.length);
+		console.log(index);
+		console.log(offset_x);
+	
 		cityGroup = centerGroup.append('g').attr('transform', 'translate(' + offset_x +','+ offset_y + ')');
 		lines = cityGroup.append('g');			
 
@@ -53,10 +56,9 @@ for (let index = 0; index < citys.length; index++) {
 								return 'Berlin';
 								});
 	});
-    console.log(offset_x);
-	offset_x += 10;
+
+	//offset_x += 10;
 	//offset_y += 200;
-	//console.log(blackBodyColor(20));
 	
 }
 

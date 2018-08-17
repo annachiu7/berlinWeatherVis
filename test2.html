@@ -17,6 +17,7 @@ var citys = ["amundsen", "berlin", "buenos_aires", "havanna", "kapstadt", "reykj
 
 for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index++, offset_x += 10) {
 	var lines, cityGroup;
+	var temp_city = citys[index];
 
 	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {		// read daily data
 		return {
@@ -30,7 +31,7 @@ for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index+
 			
 		console.log(procData.length);
 		cityGroup = centerGroup.append('g').attr('transform', 'translate(' + offset_x +','+ offset_y + ')');
-		lines= cityGroup.append('g');
+		lines = cityGroup.append('g');
 		
 		procData.forEach(generateLinesTempcircs);
 		overall_mean_temp = calculate_mean_temp(procData);
@@ -56,7 +57,7 @@ for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index+
 	//offset_y += 200;
 }
 
-	
+
 
 
 function generateLinesTempcircs(d){
@@ -70,14 +71,12 @@ function generateLinesTempcircs(d){
 					  .attr('stroke-width', '1px')
 					  .attr('transform', 'rotate('+ d.windDir +')');
   
- 
-  
-  calcMinMaxTemp(today, d);                     
-  
-  }
+  calcMinMaxTemp(today, d);                       
+}
 
 function calcMinMaxTemp(today, d) {
-	d3.csv('data/havanna/hourly.csv', function(hourlyData) {
+	console.log(temp_city);
+	d3.csv('data/' + temp_city + '/hourly.csv', function(hourlyData) {
 		return {
 			day: +hourlyData['Day'],
 			temperature: +hourlyData['Temperature  [2 m above gnd]']
@@ -143,7 +142,33 @@ function calculate_mean_preci(d){
 	return preciMean;
 }
 
-
+function generateLinesTemprclrs(d){
+  var line = lines.append('line')
+					  .attr('x1', 0) // center circle outer ring
+					  .attr('y1', 0)
+					  .attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
+					  .attr('y2', 0)
+					  .attr('stroke', '#ffd700')
+					  .attr('stroke-width', '1px')
+					  .attr('transform', 'rotate('+ d.windDir +')');
+  var low_temp_arc  = d3.arc()
+                        .startAngle(0.5*Math.PI)
+                        .endAngle(1.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(10);
+  var high_temp_arc = d3.arc()
+                        .startAngle(-0.5*Math.PI)
+                        .endAngle(0.5*Math.PI)
+                        .innerRadius(0)
+                        .outerRadius(10);
+  var one_tempr_clr = cityGroup.append('g')
+                                 .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
+  one_tempr_clr.append("path").attr("d", low_temp_arc)
+						 .attr('fill', '#44a');
+  one_tempr_clr.append("path").attr("d", high_temp_arc)
+						 .attr('fill', '#a44');                            
+  
+}
 
 /*
 function calc_dayly_avgs(){
