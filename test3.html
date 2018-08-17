@@ -7,14 +7,14 @@
 
 var svgContainer = d3.select("svg");
 var centerGroup = svgContainer.append('g')
-							  .attr('transform', 'translate(50,200)');
+							  .attr('transform', 'translate(50,100)');
 
 var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 						"shanghai", "singapur", "sydney", "weimar"];
 
 
 for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index++, offset_x+=100) {
-	let lines, cityGroup;
+	var lines, cityGroup;
 	
 	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {
 		return {
@@ -45,112 +45,71 @@ for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index+
 								.attr('fill', 'black')
 								.text(function() {
 								return 'Berlin';
-								});
+		});
 	})	
-	function generateLinesTempcircs(d){
-	  var today = d.day
-	  var line = lines.append('line')
-				.attr('x1', 0) // center circle outer ring
-				.attr('y1', 0)
-				.attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
-				.attr('y2', 0)
-				.attr('stroke', '#fff')
-				.attr('stroke-width', '1px')
-				.attr('transform', 'rotate('+ d.windDir +')');
-	  
-	  calcMinMaxTemp(today, d);                     
-	}
-	
-	
-	
-	function calcMinMaxTemp(today, d) {
-	  d3.csv('data/berlin/hourly.csv', function(hourlyData) {
-		  return {
-			  day: +hourlyData['Day'],
-			  temperature: +hourlyData['Temperature  [2 m above gnd]']
-		  };
-	  }, function(hourlyTemp) {
-		  var todayTemps = [];
-		  hourlyTemp.forEach(function(arr) {
-			  if (today == arr.day) {
-				  todayTemps.push(arr.temperature);
-			  }
-		  })
-		  min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
-	
-		  var low_temp_arc  = d3.arc()
-						  .startAngle(0.5*Math.PI)
-						  .endAngle(1.5*Math.PI)
-						  .innerRadius(0)
-						  .outerRadius(15);
-			var high_temp_arc = d3.arc()
-						  .startAngle(-0.5*Math.PI)
-						  .endAngle(0.5*Math.PI)
-						  .innerRadius(0)
-						  .outerRadius(15);
-		  var one_tempr_clr = cityGroup.append('g')
-						  .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
-		  one_tempr_clr.append("path").attr("d", low_temp_arc)
-			   .attr('fill', mapColor(min_max_temp[0]))
-			   .style('stroke','white')
-			   .style('stroke-width','2px');
-			one_tempr_clr.append("path").attr("d", high_temp_arc)
-			   .attr('fill', mapColor(min_max_temp[1]))
-			   .style('stroke','white')
-			   .style('stroke-width','2px'); 
-	  })
-	}
-	
-	// hue 0 -------------- 250
-	// clr rot ------------ dunkle blau
-	// tem 40 ------------- -20
-	function mapColor(temp) {
-	  var color = -50/3/4 * temp + 500/3;
-	  var hsl = "hsl("+ color +",100%,50%)"
-	  return hsl;
-	}
 }
 
+  function generateLinesTempcircs(d){
+    var today = d.day
+    var line = lines.append('line')
+              .attr('x1', 0) // center circle outer ring
+              .attr('y1', 0)
+              .attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
+              .attr('y2', 0)
+              .attr('stroke', '#fff')
+              .attr('stroke-width', '1px')
+              .attr('transform', 'rotate('+ d.windDir +')');
+    
+    calcMinMaxTemp(today, d, cityGroup);                     
+  }
 
 
 
-function generateLinesTemprclrs(d){
-  var line = lines.append('line')
-					  .attr('x1', 0) // center circle outer ring
-					  .attr('y1', 0)
-					  .attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
-					  .attr('y2', 0)
-					  .attr('stroke', '#ffd700')
-					  .attr('stroke-width', '1px')
-					  .attr('transform', 'rotate('+ d.windDir +')');
-  var low_temp_arc  = d3.arc()
+function calcMinMaxTemp(today, d, cityGroup) {
+	d3.csv('data/berlin/hourly.csv', function(hourlyData) {
+		return {
+			day: +hourlyData['Day'],
+			temperature: +hourlyData['Temperature  [2 m above gnd]']
+		};
+	}, function(hourlyTemp) {
+		var todayTemps = [];
+		hourlyTemp.forEach(function(arr) {
+			if (today == arr.day) {
+				todayTemps.push(arr.temperature);
+			}
+		})
+		min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
+
+		var low_temp_arc  = d3.arc()
                         .startAngle(0.5*Math.PI)
                         .endAngle(1.5*Math.PI)
                         .innerRadius(0)
-                        .outerRadius(10);
-  var high_temp_arc = d3.arc()
+                        .outerRadius(15);
+  		var high_temp_arc = d3.arc()
                         .startAngle(-0.5*Math.PI)
                         .endAngle(0.5*Math.PI)
                         .innerRadius(0)
-                        .outerRadius(10);
-  var one_tempr_clr = cityGroup.append('g')
-                                 .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
-  one_tempr_clr.append("path").attr("d", low_temp_arc)
-						 .attr('fill', '#44a');
-  one_tempr_clr.append("path").attr("d", high_temp_arc)
-						 .attr('fill', '#a44');                            
-  
-  }
+                        .outerRadius(15);
+		var one_tempr_clr = cityGroup.append('g')
+						.attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
+		one_tempr_clr.append("path").attr("d", low_temp_arc)
+             .attr('fill', mapColor(min_max_temp[0]))
+             .style('stroke','white')
+             .style('stroke-width','2px');
+  		one_tempr_clr.append("path").attr("d", high_temp_arc)
+             .attr('fill', mapColor(min_max_temp[1]))
+             .style('stroke','white')
+             .style('stroke-width','2px'); 
+	})
+}
 
-function generateLines(d){
-  var line = lines.append('line')
-					  .attr('x1', 0) // center circle outer ring
-					  .attr('y1', 0)
-					  .attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
-					  .attr('y2', 0)
-					  .attr('stroke', '#ffd700')
-					  .attr('stroke-width', '1px')
-					  .attr('transform', 'rotate('+ d.windDir +')')
+// hue 0 -------------- 250
+// clr rot ------------ dunkle blau
+// tem 40 ------------- -20
+function mapColor(temp) {
+	var color = -50/3/4 * temp + 500/3;
+	var hsl = "hsl("+ color +",100%,50%)"
+	return hsl;
 }
 
 function calculate_mean_temp(d){
@@ -162,6 +121,7 @@ function calculate_mean_preci(d){
 	var preciMean = d3.mean(d,function(a) { return +a.meanPreci});
 	return preciMean;
 }
+
 
 </script>
 </body>
