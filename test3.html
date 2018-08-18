@@ -30,7 +30,8 @@ for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index+
 			windDir: +data["Wind Direction daily mean [10 m above gnd]"],
 			meanTempr: +data['Temperature daily mean [2 m above gnd]'],
 			meanPreci: +data['Total Precipitation daily sum [sfc]'],
-			day: +data.Day
+			day: +data.Day,
+			city: citys[index]
 		};
 	}, function(procData) {	
 		cityGroup = centerGroup.append('g').attr('transform', 'translate(' + offset_x +','+ offset_y + ')');
@@ -79,7 +80,7 @@ for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index+
 
 
 function calcMinMaxTemp(today, d, cityGroup, endDist) {
-	d3.csv('data/berlin/hourly.csv', function(hourlyData) {
+	d3.csv('data/' + d.city + '/hourly.csv', function(hourlyData) {
 		return {
 			day: +hourlyData['Day'],
 			temperature: +hourlyData['Temperature  [2 m above gnd]']
