@@ -7,29 +7,31 @@
 
 var svgContainer = d3.select("svg");
 var centerGroup = svgContainer.append('g')
-							  .attr('transform', 'translate(50,100)');
+							  .attr('transform', 'translate(0,100)');
 
 var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 						"shanghai", "singapur", "sydney", "weimar"];
 
 
-for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index++, offset_x+=100) {
+for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index++, offset_x+=300) {
 	var lines, cityGroup;
+	var overall_mean_temp, overall_mean_preci;
 	
 	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {
 		return {
 			windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
 			windDir: +data["Wind Direction daily mean [10 m above gnd]"],
 			meanTempr: +data['Temperature daily mean [2 m above gnd]'],
-			meanPreci: +data['Total Precipitation daily sum [sfc]']
+			meanPreci: +data['Total Precipitation daily sum [sfc]'],
+			day: +data.Day
 		};
 	}, function(procData) {	
 		cityGroup = centerGroup.append('g').attr('transform', 'translate(' + offset_x +','+ offset_y + ')');
 		lines = cityGroup.append('g');			
 
-		procData.forEach(generateLinesTempcircs);
 		overall_mean_temp = calculate_mean_temp(procData);
 		overall_mean_preci = calculate_mean_preci(procData);
+		procData.forEach(generateLinesTempcircs);
 		
 		// Draw center elements. Mean temperature and precipitation
 		var outer_ring_clr = cityGroup.append('circle')
@@ -44,28 +46,30 @@ for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index+
 								.attr('alignment-baseline', 'middle')
 								.attr('fill', 'black')
 								.text(function() {
-								return 'Berlin';
+								return citys[index];
 		});
 	})	
 }
 
   function generateLinesTempcircs(d){
-    var today = d.day
+	var today = d.day
+	var startDist = overall_mean_temp + overall_mean_preci*3;
+	var endDist = startDist + d.windSpeed*3;
     var line = lines.append('line')
-              .attr('x1', 0) // center circle outer ring
+              .attr('x1', startDist) // center circle outer ring
               .attr('y1', 0)
-              .attr('x2', d.windSpeed*10) // line length?? connecting centers or what we can see?
+              .attr('x2', endDist) // line length?? connecting centers or what we can see?
               .attr('y2', 0)
               .attr('stroke', '#fff')
               .attr('stroke-width', '1px')
               .attr('transform', 'rotate('+ d.windDir +')');
     
-    calcMinMaxTemp(today, d, cityGroup);                     
+    calcMinMaxTemp(today, d, cityGroup, endDist);                     
   }
 
 
 
-function calcMinMaxTemp(today, d, cityGroup) {
+function calcMinMaxTemp(today, d, cityGroup, endDist) {
 	d3.csv('data/berlin/hourly.csv', function(hourlyData) {
 		return {
 			day: +hourlyData['Day'],
@@ -91,7 +95,7 @@ function calcMinMaxTemp(today, d, cityGroup) {
                         .innerRadius(0)
                         .outerRadius(15);
 		var one_tempr_clr = cityGroup.append('g')
-						.attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
+						.attr('transform','rotate('+ d.windDir +')translate('+ endDist +')rotate('+ -d.windDir +')');
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
              .attr('fill', mapColor(min_max_temp[0]))
              .style('stroke','white')
