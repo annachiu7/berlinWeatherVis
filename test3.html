@@ -13,9 +13,9 @@ var svgContainer = d3.select("svg");
 var centerGroup = svgContainer.append('g').attr("width", "100%")
  .attr("height", "100%")
  .attr('transform', 'translate(0,100)')
- .call(d3.zoom().on("zoom", function () {
-    centerGroup.attr("transform", d3.event.transform)
- }));
+//  .call(d3.zoom().on("zoom", function () {
+//     centerGroup.attr("transform", d3.event.transform)
+//  }));
 
 var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 						"shanghai", "singapur", "sydney", "weimar", "amundsen"];
@@ -55,16 +55,17 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 		
 		// Draw center elements. Mean temperature and precipitation
 		var outer_ring_clr = cityGroup.append('circle')
-								.attr('r', overall_mean_sun_dur + overall_mean_preci*3)
+								.attr('r', overall_mean_sun_dur/20 + overall_mean_preci*3)
 								.style('fill', '#add8e6')
+								.on('click', function(val2, val1, e) {console.log(val1 +" " + val2)}.bind(this, overall_mean_preci, overall_mean_sun_dur))
 								.on("mouseover", handleMouseOver)
           						.on("mouseout", handleMouseOut);
 
 
-
 		var center_clr = cityGroup.append('circle')
-								.attr('r', overall_mean_sun_dur)
+								.attr('r', overall_mean_sun_dur/20)
 								.style('fill', '#ffd700')
+								.on('click', function(val2, val1, e) {console.log(val1 +" " + val2)}.bind(this, overall_mean_preci, overall_mean_sun_dur))
 								.on("mouseover", handleMouseOver)
           						.on("mouseout", handleMouseOut);
 		
@@ -83,7 +84,7 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 
 function generateLinesTempcircs(d){
 	var today = d.day
-	var startDist = overall_mean_sun_dur + overall_mean_preci*3;
+	var startDist = overall_mean_sun_dur/20 + overall_mean_preci*3;
 	var endDist = startDist + d.windSpeed*3;
     var line = lines.append('line')
               .attr('x1', startDist) // center circle outer ring
@@ -160,7 +161,7 @@ function calculate_mean_preci(d){
 }
 function calculate_mean_sun_dur(d){
 	var sunDuration = d3.mean(d,function(a) { return +a.sunDur});
-	return sunDuration/20;
+	return sunDuration;
 }
 /// Very experimental shit!
 // Create Event Handlers for mouse
@@ -169,7 +170,11 @@ function handleMouseOver(d, i) {  // Add interactivity
 }
 
 function handleMouseOut(d, i) {
-	console.log("hallo")
+	console.log("chiao")
+}
+
+function handleOnClick(val, e) {
+	console.log(overall_mean_preci)
 }
 
 </script>
