@@ -72,6 +72,7 @@ for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index+
 	  }, function(hourlyTemp) {
 		  var todayTemps = [];
 		  hourlyTemp.forEach(function(arr) {
+			console.log(today);
 			  if (today == arr.day) {
 				  todayTemps.push(arr.temperature);
 			  }
@@ -88,6 +89,7 @@ for (let index = 0, offset_x = 500, offset_y = 200; index < citys.length; index+
 						  .endAngle(0.5*Math.PI)
 						  .innerRadius(0)
 						  .outerRadius(15);
+
 		  var one_tempr_clr = cityGroup.append('g')
 						  .attr('transform','rotate('+ d.windDir +')translate('+ d.windSpeed*10 +')rotate('+ -d.windDir +')');
 		  one_tempr_clr.append("path").attr("d", low_temp_arc)
