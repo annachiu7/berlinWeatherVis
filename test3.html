@@ -5,15 +5,25 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
+// Mouse Hover Event: http://bl.ocks.org/WilliamQLiu/76ae20060e19bf42d774
+
 var svgContainer = d3.select("svg");
-var centerGroup = svgContainer.append('g')
-							  .attr('transform', 'translate(0,100)');
+
+// https://coderwall.com/p/psogia/simplest-way-to-add-zoom-pan-on-d3-js
+var centerGroup = svgContainer.append('g').attr("width", "100%")
+ .attr("height", "100%")
+ .attr('transform', 'translate(0,100)')
+ .call(d3.zoom().on("zoom", function () {
+    centerGroup.attr("transform", d3.event.transform)
+ }));
 
 var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
-						"shanghai", "singapur", "sydney", "weimar"];
+						"shanghai", "singapur", "sydney", "weimar", "amundsen"];
 
 var city_names = ["Berlin", "Buenos Aires", "Havanna", "Kapstadt", "Reykjavik", 
-									"Shanghai", "Singapur", "Sydney", "Weimar"];
+									"Shanghai", "Singapur", "Sydney", "Weimar", "Amundsen"];
+
+
 
 for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index++, offset_x+=300) {
 	var lines, cityGroup;
@@ -50,18 +60,21 @@ for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index+
 		var center_clr = cityGroup.append('circle')
 								.attr('r', overall_mean_temp)
 								.style('fill', '#ffd700');
+		
 		var center_text = cityGroup.append('text')
 								.attr('text-anchor', 'middle')
 								.attr('alignment-baseline', 'middle')
 								.attr('fill', 'white')
 								.attr('transform', 'translate(0, 150)')
+								.style("font-size", "28px")
 								.text(function() {
 								return city_names[index];
+
 		});
 	})	
 }
 
-  function generateLinesTempcircs(d){
+function generateLinesTempcircs(d){
 	var today = d.day
 	var startDist = overall_mean_temp + overall_mean_preci*3;
 	var endDist = startDist + d.windSpeed*3;
@@ -103,13 +116,16 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
                         .startAngle(-0.5*Math.PI)
                         .endAngle(0.5*Math.PI)
                         .innerRadius(0)
-                        .outerRadius(15);
+						.outerRadius(15);
+						
 		var one_tempr_clr = cityGroup.append('g')
 						.attr('transform','rotate('+ d.windDir +')translate('+ endDist +')rotate('+ -d.windDir +')');
+
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
              .attr('fill', color(min_max_temp[0] + 40))
              .style('stroke','white')
-             .style('stroke-width','2px');
+			 .style('stroke-width','2px');
+			 
   		one_tempr_clr.append("path").attr("d", high_temp_arc)
              .attr('fill', color(min_max_temp[1] + 40))
              .style('stroke','white')
@@ -136,6 +152,15 @@ function calculate_mean_preci(d){
 	return preciMean;
 }
 
+/// Very experimental shit!
+// Create Event Handlers for mouse
+function handleMouseOver(d, i) {  // Add interactivity
+	console.log("hallo")
+}
+
+function handleMouseOut(d, i) {
+	console.log("hallo")
+}
 
 </script>
 
