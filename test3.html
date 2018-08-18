@@ -26,7 +26,7 @@ var city_names = ["Berlin", "Buenos Aires", "Havanna", "Kapstadt", "Reykjavik",
 
 
 
-for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index++, offset_x+=300) {
+for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index++, offset_x+=300) {
 	var lines, cityGroup;
 	var overall_mean_temp, overall_mean_preci;
 	
@@ -41,6 +41,7 @@ for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index+
 			windDir: +data["Wind Direction daily mean [10 m above gnd]"],
 			meanTempr: +data['Temperature daily mean [2 m above gnd]'],
 			meanPreci: +data['Total Precipitation daily sum [sfc]'],
+			sunDur: +data['Sunshine Duration daily sum [sfc]'],
 			day: +data.Day,
 			city: citys[index]
 		};
@@ -49,18 +50,24 @@ for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index+
 		lines = cityGroup.append('g');			
 
 		overall_mean_temp = calculate_mean_temp(procData);
+		overall_mean_sun_dur = calculate_mean_sun_dur(procData);
 		overall_mean_preci = calculate_mean_preci(procData);
 		procData.forEach(generateLinesTempcircs);
 		
 		// Draw center elements. Mean temperature and precipitation
 		var outer_ring_clr = cityGroup.append('circle')
-								.attr('r', overall_mean_temp + overall_mean_preci*3)
-								.style('fill', '#add8e6');
+								.attr('r', overall_mean_sun_dur + overall_mean_preci*3)
+								.style('fill', '#add8e6')
+								.on("mouseover", handleMouseOver)
+          						.on("mouseout", handleMouseOut);
+
 
 
 		var center_clr = cityGroup.append('circle')
-								.attr('r', overall_mean_temp)
-								.style('fill', '#ffd700');
+								.attr('r', overall_mean_sun_dur)
+								.style('fill', '#ffd700')
+								.on("mouseover", handleMouseOver)
+          						.on("mouseout", handleMouseOut);
 		
 		var center_text = cityGroup.append('text')
 								.attr('text-anchor', 'middle')
@@ -77,7 +84,7 @@ for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index+
 
 function generateLinesTempcircs(d){
 	var today = d.day
-	var startDist = overall_mean_temp + overall_mean_preci*3;
+	var startDist = overall_mean_sun_dur + overall_mean_preci*3;
 	var endDist = startDist + d.windSpeed*3;
     var line = lines.append('line')
               .attr('x1', startDist) // center circle outer ring
@@ -152,7 +159,10 @@ function calculate_mean_preci(d){
 	var preciMean = d3.mean(d,function(a) { return +a.meanPreci});
 	return preciMean;
 }
-
+function calculate_mean_sun_dur(d){
+	var sunDuration = d3.mean(d,function(a) { return +a.sunDur});
+	return sunDuration/20;
+}
 /// Very experimental shit!
 // Create Event Handlers for mouse
 function handleMouseOver(d, i) {  // Add interactivity
