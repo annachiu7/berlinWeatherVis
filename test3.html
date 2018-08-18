@@ -13,12 +13,17 @@ var citys = ["berlin", "buenos_aires", "havanna", "kapstadt", "reykjavik",
 						"shanghai", "singapur", "sydney", "weimar"];
 
 var city_names = ["Berlin", "Buenos Aires", "Havanna", "Kapstadt", "Reykjavik", 
-									"Shanghai", "Singapur", "Sydney", "Weimar"]
+									"Shanghai", "Singapur", "Sydney", "Weimar"];
 
 for (let index = 0, offset_x = 200, offset_y = 200; index < citys.length; index++, offset_x+=300) {
 	var lines, cityGroup;
 	var overall_mean_temp, overall_mean_preci;
 	
+	if(index != 0 && index % 3 == 0 ){
+		offset_y += 300;
+		offset_x = 200;
+	}
+
 	d3.csv("data/" + citys[index] + "/daily.csv", function(data) {
 		return {
 			windSpeed : +data["Wind Speed daily mean [10 m above gnd]"],
