@@ -3,6 +3,7 @@
 <body style="background-color:black;">
 <svg width="1960" height="1960"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="colorScale.js"></script>
 <script>
 
 // Mouse Hover Event: http://bl.ocks.org/WilliamQLiu/76ae20060e19bf42d774
@@ -122,12 +123,12 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 						.attr('transform','rotate('+ d.windDir +')translate('+ endDist +')rotate('+ -d.windDir +')');
 
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
-             .attr('fill', mapColor(min_max_temp[0]))
+             .attr('fill', color(min_max_temp[0] + 40))
              .style('stroke','white')
 			 .style('stroke-width','2px');
 			 
   		one_tempr_clr.append("path").attr("d", high_temp_arc)
-             .attr('fill', mapColor(min_max_temp[1]))
+             .attr('fill', color(min_max_temp[1] + 40))
              .style('stroke','white')
              .style('stroke-width','2px'); 
 	})
