@@ -27,3 +27,18 @@ centerGroup.append("rect")
     .attr('x', 100)
     .attr('y', 0)
     .style("fill", "url(#linear-gradient)");
+
+
+var data = d3.range(5);
+var celcius = [-45, -22, 0, 22, 45];
+centerGroup.selectAll('text')
+    .data(data)
+    .enter()
+    .append('text')
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'middle')
+    .attr('fill', '#ccc')
+    .style('font-size', '10px')
+    .attr('x', function(d,i){return 100+i*76;})
+    .attr('y', -5)
+    .text(function(d,i){return celcius[i] + String.fromCharCode(176) + 'C';})
