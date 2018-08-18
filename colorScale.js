@@ -21,9 +21,9 @@ linearGradient.selectAll("stop")
     .attr("stop-color", function(d) { return d; });
 
 //Draw the rectangle and fill with gradient
-svg.append("rect")
+centerGroup.append("rect")
     .attr("width", 300)
     .attr("height", 20)
-    .attr('x', 50)
-    .attr('y', 30)
+    .attr('x', 100)
+    .attr('y', 0)
     .style("fill", "url(#linear-gradient)");
