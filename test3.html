@@ -81,15 +81,15 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 										div.transition()
 											.duration(200)
 											.style("opacity", .9);
-										div.html(val2 + "<br/>" + val1)
+										div.html("Niederschlag: " + val2 + " mm <br/> Sonnenminuten: " + val1 + "min")
 											.style("left", (d3.event.pageX) + "px")
 											.style("top", (d3.event.pageY - 28) + "px");
 									}.bind(this, overall_mean_preci, overall_mean_sun_dur))
-									.on("mouseout", function(d) {
-										div.transition()
-											.duration(500)
-											.style("opacity", 0);
-										});
+								.on("mouseout", function(d) {
+									div.transition()
+										.duration(500)
+										.style("opacity", 0);
+									});
 
 
 		var center_clr = cityGroup.append('circle')
@@ -103,15 +103,15 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 										div.transition()
 											.duration(200)
 											.style("opacity", .9);
-										div.html(val2 + "<br/>" + val1)
+										div.html("Niederschlag: " + val2 + " mm <br/> Sonnenminuten: " + val1 + "min")
 											.style("left", (d3.event.pageX) + "px")
 											.style("top", (d3.event.pageY - 28) + "px");
 									}.bind(this, overall_mean_preci, overall_mean_sun_dur))
-									.on("mouseout", function(d) {
-										div.transition()
-											.duration(500)
-											.style("opacity", 0);
-										});
+								.on("mouseout", function(d) {
+									div.transition()
+										.duration(500)
+										.style("opacity", 0);
+									});
 		
 		var center_text = cityGroup.append('text')
 								.attr('text-anchor', 'middle')
@@ -171,7 +171,20 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 						.outerRadius(15);
 						
 		var one_tempr_clr = cityGroup.append('g')
-						.attr('transform','rotate('+ d.windDir +')translate('+ endDist +')rotate('+ -d.windDir +')');
+						.attr('transform','rotate('+ d.windDir +')translate('+ endDist +')rotate('+ -d.windDir +')')
+						.on("mouseover", function(val2, val1, e) {
+								div.transition()
+									.duration(200)
+									.style("opacity", .9);
+								div.html(val2 + "<br/>" + val1)
+									.style("left", (d3.event.pageX) + "px")
+									.style("top", (d3.event.pageY - 28) + "px");
+							}.bind(this,min_max_temp[1], min_max_temp[0]))
+						.on("mouseout", function(d) {
+							div.transition()
+								.duration(500)
+								.style("opacity", 0);
+							});
 
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
              .attr('fill', color(min_max_temp[0] + 40))
