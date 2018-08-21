@@ -157,7 +157,7 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 				todayTemps.push(arr.temperature);
 			}
 		})
-		min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
+		var min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
 
 		var low_temp_arc  = d3.arc()
                         .startAngle(0.5*Math.PI)
@@ -172,19 +172,36 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 						
 		var one_tempr_clr = cityGroup.append('g')
 						.attr('transform','rotate('+ d.windDir +')translate('+ endDist +')rotate('+ -d.windDir +')')
+						/*
 						.on("mouseover", function(val2, val1, e) {
 								div.transition()
 									.duration(200)
 									.style("opacity", .9);
-								div.html(val2 + "<br/>" + val1)
+								div.html(val2 + " °C <br/>" + val1 + " °C ")
 									.style("left", (d3.event.pageX) + "px")
 									.style("top", (d3.event.pageY - 28) + "px");
-							}.bind(this,min_max_temp[1], min_max_temp[0]))
+									console.log(this)
+									this.parentNode.appendChild(this);
+							}.bind(this, min_max_temp[1], min_max_temp[0]))
+						*/
+						.on("mouseover", function(d) {
+								div.transition()
+									.duration(200)
+									.style("opacity", .9);
+								div.html(min_max_temp[1] + " °C <br/>" + min_max_temp[0] + " °C ")
+									.style("left", (d3.event.pageX) + "px")
+									.style("top", (d3.event.pageY - 28) + "px");
+									this.parentNode.appendChild(this);
+							})
 						.on("mouseout", function(d) {
 							div.transition()
 								.duration(500)
 								.style("opacity", 0);
-							});
+							})
+						.on("click", function(d){
+							console.log(index);
+						});
+
 
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
              .attr('fill', color(min_max_temp[0] + 40))
