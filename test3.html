@@ -44,6 +44,7 @@ var div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);	
 
+var single_select = 0;
 
 for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index++, offset_x+=300) {
 	var lines, cityGroup;
@@ -95,10 +96,6 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 		var center_clr = cityGroup.append('circle')
 								.attr('r', overall_mean_sun_dur/20)
 								.style('fill', '#ffd700')
-								.on('click', function(d) {     
-									tool_tip.show;
-									console.log(tool_tip.show);
-								})
 								.on("mouseover", function(val2, val1, e) {
 										div.transition()
 											.duration(200)
@@ -157,6 +154,7 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 				todayTemps.push(arr.temperature);
 			}
 		})
+
 		var min_max_temp = [d3.min(todayTemps), d3.max(todayTemps)];
 
 		var low_temp_arc  = d3.arc()
@@ -171,6 +169,7 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 						.outerRadius(15);
 						
 		var one_tempr_clr = cityGroup.append('g')
+						.attr('class', "d_" + today + " day")
 						.attr('transform','rotate('+ d.windDir +')translate('+ endDist +')rotate('+ -d.windDir +')')
 						/*
 						.on("mouseover", function(val2, val1, e) {
@@ -198,8 +197,28 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 								.duration(500)
 								.style("opacity", 0);
 							})
-						.on("click", function(d){
-							console.log(index);
+						.on("click", function(f){
+							single_select++;
+							let class_name = "d_" + today;
+							let all = document.querySelectorAll('.day');
+
+							let not_selected = [];
+							for (let outter = 0; outter < all.length; ++outter) {
+								if (all[outter].classList[0] !== class_name) {
+									not_selected.push(all[outter]);
+								}
+							}
+
+							if(single_select % 2 == 1) {
+								not_selected.forEach(function (e) {
+									e.setAttribute("style", "display: none");
+								});
+							} else {
+								not_selected.forEach(function (e) {
+									e.setAttribute("style", "display: visible");
+								});
+
+							}
 						});
 
 
