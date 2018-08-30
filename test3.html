@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<body style="background-color:black;">
+<body style="background-color:black;" onload="script();">
+<div style="display: none" id="hideAll">&nbsp;</div>
+<script type="text/javascript">
+	document.getElementById("hideAll").style.display = "block";
+</script> 
 <svg width="1960" height="1960"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <style>   
+
+#hideAll
+{
+   position: fixed;
+   left: 0px; 
+   right: 0px; 
+   top: 0px; 
+   bottom: 0px; 
+   background-color: white;
+   z-index: 99; /* Higher than anything else in the document */
+
+}
 
 div.tooltip {
   display: block;
@@ -198,8 +214,8 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 								.duration(500)
 								.style("opacity", 0);
 							})
-						.on("click", function(f){
-							single_select++;
+						.on("click", function(f){	//Searches for all lines and circles with same name
+							single_select++;		//and hides / shows them again.
 							let class_name = "d_" + today;
 							let all = document.querySelectorAll('.day');
 
@@ -244,6 +260,7 @@ function mapColor(temp) {
 	return hsl;
 }
 
+// Mean calc functions
 function calculate_mean_temp(d){
 	var temperatureMean = d3.mean(d,function(a) { return +a.meanTempr});
 	return temperatureMean;
@@ -257,16 +274,10 @@ function calculate_mean_sun_dur(d){
 	var sunDuration = d3.mean(d,function(a) { return +a.sunDur});
 	return sunDuration;
 }
-/// Very experimental shit!
-// Create Event Handlers for mouse
-function handleMouseOver(d, i) {  // Add interactivity
 
-	console.log("hallo")
-}
-
-function handleMouseOut(d, i) {
-	console.log("chiao")
-}
+//Hides White loading overlay
+window.onload = function() 
+  { document.getElementById("hideAll").style.display = "none"; }
 
 
 </script>
