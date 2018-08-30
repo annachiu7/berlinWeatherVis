@@ -5,7 +5,7 @@
 <script type="text/javascript">
 	document.getElementById("hideAll").style.display = "block";
 </script> 
-<svg width="1960" height="1960"></svg>
+<svg width="1000" height="1800"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <style>   
 
@@ -61,6 +61,7 @@ var div = d3.select("body").append("div")
     .style("opacity", 0);	
 
 var single_select = 0;
+var zoomed = false;
 
 for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index++, offset_x+=300) {
 	var lines, cityGroup;
@@ -124,7 +125,11 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 									div.transition()
 										.duration(500)
 										.style("opacity", 0);
-									});
+									})
+                .on("click", function(e){
+                  transformed = getElementTransformInfo(this);
+                  zoomed? (zoomTo(1, transformed)) : (zoomTo(2, transformed));
+                  });
 		
 		var center_text = cityGroup.append('text')
 								.attr('text-anchor', 'middle')
@@ -273,6 +278,37 @@ function calculate_mean_preci(d){
 function calculate_mean_sun_dur(d){
 	var sunDuration = d3.mean(d,function(a) { return +a.sunDur});
 	return sunDuration;
+}
+
+
+function readStringVal(str) {
+  str = str.substring(10, str.length-1).split(",")
+  str_x = parseInt(str[0]); 
+  str_y = parseInt(str[1]);
+  return [str_x, str_y];
+}
+
+function arraySum(arr_a, arr_b) {
+  return [arr_a[0] + arr_b[0], arr_a[1] + arr_b[1]];
+}
+
+function getElementTransformInfo(d) {
+  var parent_trans = d.parentNode.getAttribute("transform");
+  var superparent_trans = d.parentNode.parentNode.getAttribute("transform");
+  parent_trans = readStringVal(parent_trans);
+  superparent_trans = readStringVal(superparent_trans);
+  return arraySum(parent_trans, superparent_trans);
+}
+
+function zoomTo(scale, elemTransform) {
+  var center = [500, 620];
+  var translate_x = center[0]-elemTransform[0]; 
+  var translate_y = center[1]-elemTransform[1] -30;
+  console.log(center)
+  console.log(elemTransform)
+  if (scale == 1) var trans = svgContainer.transition().duration(1000).attr("transform", "scale(" + scale + ")");
+  else var trans = svgContainer.transition().duration(1000).attr("transform", "scale(" + scale + ")translate(" + translate_x + ", " + translate_y + ")");
+  zoomed = !zoomed;
 }
 
 //Hides White loading overlay
