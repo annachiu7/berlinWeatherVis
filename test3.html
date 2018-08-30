@@ -127,7 +127,8 @@ function generateLinesTempcircs(d){
 	var today = d.day
 	var startDist = overall_mean_sun_dur/20 + overall_mean_preci*3;
 	var endDist = startDist + d.windSpeed*3;
-    var line = lines.append('line')
+	var line = lines.append('line')
+			  .attr('class', "d_" + today + " day")
               .attr('x1', startDist) // center circle outer ring
               .attr('y1', 0)
               .attr('x2', endDist) // line length?? connecting centers or what we can see?
