@@ -86,8 +86,11 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 		lines = cityGroup.append('g');			
 
 		overall_mean_temp = calculate_mean_temp(procData);
+
 		overall_mean_sun_dur = calculate_mean_sun_dur(procData);
-		overall_mean_preci = calculate_mean_preci(procData);
+		overall_mean_sun_dur_in_hours = round(overall_mean_sun_dur/60, 2); //Unnecessary comment for unnecessary long variable name.
+
+		overall_mean_preci = round(calculate_mean_preci(procData), 1);
 		procData.forEach(generateLinesTempcircs);
 		
 		// Draw center elements. Mean temperature and precipitation
@@ -98,10 +101,10 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 										div.transition()
 											.duration(200)
 											.style("opacity", .9);
-										div.html("Niederschlag: " + val2 + " mm <br/> Sonnenminuten: " + val1 + "min")
+										div.html("Niederschlag: " + val2 + " mm <br/> Sonnenstunden: " + val1 + " h")
 											.style("left", (d3.event.pageX) + "px")
 											.style("top", (d3.event.pageY - 28) + "px");
-									}.bind(this, overall_mean_preci, overall_mean_sun_dur))
+									}.bind(this, overall_mean_preci, overall_mean_sun_dur_in_hours))
 								.on("mouseout", function(d) {
 									div.transition()
 										.duration(500)
@@ -116,10 +119,10 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 										div.transition()
 											.duration(200)
 											.style("opacity", .9);
-										div.html("Niederschlag: " + val2 + " mm <br/> Sonnenminuten: " + val1 + "min")
+										div.html("Niederschlag: " + val2 + " mm <br/> Sonnenstunden: " + val1 + " h")
 											.style("left", (d3.event.pageX) + "px")
 											.style("top", (d3.event.pageY - 28) + "px");
-									}.bind(this, overall_mean_preci, overall_mean_sun_dur))
+									}.bind(this, overall_mean_preci, overall_mean_sun_dur_in_hours))
 								.on("mouseout", function(d) {
 									div.transition()
 										.duration(500)
@@ -204,7 +207,7 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 								div.transition()
 									.duration(200)
 									.style("opacity", .9);
-								div.html(min_max_temp[1] + " °C <br/>" + min_max_temp[0] + " °C ")
+								div.html("<b>" + today + ".8.18 </b><br/>"+ min_max_temp[1] + " °C <br/>" + min_max_temp[0] + " °C ")
 									.style("left", (d3.event.pageX) + "px")
 									.style("top", (d3.event.pageY - 28) + "px");
 									this.parentNode.appendChild(this);
@@ -275,6 +278,9 @@ function calculate_mean_sun_dur(d){
 	return sunDuration;
 }
 
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
 //Hides White loading overlay
 window.onload = function() 
   { document.getElementById("hideAll").style.display = "none"; }
