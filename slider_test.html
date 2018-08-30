@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <!-- Dependencies -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <!-- Range slider code -->
+    <script src="d3RangeSlider.js"></script>
+
+    <!-- Range slider style -->
+    <link href="d3RangeSlider.css" rel="stylesheet">
+
+
+    <style type="text/css">
+        #container{
+            height: 30px;
+        }
+
+        #range-label {
+            text-align: center;
+        }
+        
+        .section{
+            margin-bottom:5em;
+            font-size: 1.5em;
+        }
+        .footer{
+            background-color: #F8F8FA;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="section">
+
+        <div id="container"></div>
+        <div id="range-label"></div>
+
+        <script type="text/javascript">
+            var slider = createD3RangeSlider(2, 31, "#container", false);
+
+            slider.onChange(function(newRange){
+                d3.select("#range-label").html(newRange.begin + " &mdash; " + newRange.end);
+            });
+
+            slider.range(0,10);
+        </script>
+    </div>
+
+
+</div>
+
+</body>
+</html>

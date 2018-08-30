@@ -5,10 +5,33 @@
 <script type="text/javascript">
 	document.getElementById("hideAll").style.display = "block";
 </script> 
+
+<!-- Range slider style -->
+<style type="text/css">
+	#container{
+		height: 30px;
+	}
+
+	#range-label {
+		text-align: center;
+		color: rgb(255, 255, 255);
+	}
+	
+	.section{
+		margin-bottom:5em;
+		font-size: 1.5em;
+	}
+	.footer{
+		background-color: #F8F8FA;
+		padding: 30px;
+	}
+</style>
+
 <svg width="1960" height="1960"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="d3RangeSlider.js"></script>
+<link href="d3RangeSlider.css" rel="stylesheet">
 <style>   
-
 #hideAll
 {
    position: fixed;
@@ -35,6 +58,28 @@ div.tooltip {
 }
 
 </style>
+
+<div class="container">
+
+		<div class="section">
+	
+			<div id="container"></div>
+			<div id="range-label"></div>
+	
+			<script type="text/javascript">
+				var slider = createD3RangeSlider(2, 31, "#container", false);
+	
+				slider.onChange(function(newRange){
+					d3.select("#range-label").html(newRange.begin + ". &mdash; " + newRange.end + ".8.2018");
+				});
+	
+				slider.range(2,9);
+			</script>
+		</div>
+	
+	
+</div>
+
 <script>
 
 // Mouse Hover Event: http://bl.ocks.org/WilliamQLiu/76ae20060e19bf42d774
@@ -93,6 +138,7 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 		overall_mean_preci = round(calculate_mean_preci(procData), 1);
 		procData.forEach(generateLinesTempcircs);
 		
+
 		// Draw center elements. Mean temperature and precipitation
 		var outer_ring_clr = cityGroup.append('circle')
 								.attr('r', overall_mean_sun_dur/20 + overall_mean_preci*3)
@@ -241,6 +287,41 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 							}
 						});
 
+		//If slider is moved, z.begin and z.end are the new values.
+		slider.onChange(function(z){
+			let all = document.querySelectorAll('.day');
+			let class_name = "d_" + today;
+
+			let selected = [];
+			let not_selected = [];
+
+			all.forEach(function (e) {
+									e.setAttribute("style", "display: visible");
+								});
+
+			for (let outter = 0; outter < all.length; ++outter) {
+				if (all[outter].classList[0] === class_name) {
+					selected.push(all[outter]);
+				}else{
+					not_selected.push(all[outter]);
+				}
+			}
+			
+
+			if(z.begin > today||z.end < today) {
+				console.log('tag ' + today + ' nicht drin')
+				selected.forEach(function (e) {
+									e.setAttribute("style", "display: none");
+								});
+			} else {
+				console.log('tag ' + today + ' drin')
+				/*
+				not_selected.forEach(function (e) {
+									e.setAttribute("style", "display: visible");
+								});
+				*/
+			}
+		})
 
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
              .attr('fill', color(min_max_temp[0] + 40))
