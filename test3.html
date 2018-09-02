@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<body style="background-color:black;" onload="script();">
+<body style="background-color:rgb(22, 22, 22);" onload="script();">
 <div style="display: none" id="hideAll">&nbsp;</div>
 <script type="text/javascript">
 	document.getElementById("hideAll").style.display = "block";
@@ -9,7 +9,7 @@
 <!-- Range slider style -->
 <style type="text/css">
 	#container{
-		height: 30px;
+		height: 30px;  
 	}
 
 	#range-label {
@@ -27,7 +27,7 @@
 	}
 </style>
 
-<svg width="1000" height="1800"></svg>
+<svg width="1600" height="900"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="d3RangeSlider.js"></script>
 <script src="fisheye.js"></script>
@@ -90,7 +90,7 @@ var svgContainer = d3.select("svg");
 // https://coderwall.com/p/psogia/simplest-way-to-add-zoom-pan-on-d3-js
 var centerGroup = svgContainer.append('g').attr("width", "100%")
  .attr("height", "100%")
- .attr('transform', 'translate(0,100)')
+ .attr('transform', 'translate(0,20)')
 //  .call(d3.zoom().on("zoom", function () {
 //     centerGroup.attr("transform", d3.event.transform)
 //  }));
@@ -132,7 +132,7 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 	var lines, cityGroup;
 	var overall_mean_temp, overall_mean_preci;
 	
-	if(index != 0 && index % 3 == 0 ){
+	if(index != 0 && index % 5 == 0 ){
 		offset_y += 300;
 		offset_x = 200;
 	}
@@ -396,7 +396,7 @@ function getElementTransformInfo(d) {
 }
 
 function zoomTo(scale, elemTransform) {
-  var center = [500, 620];
+  var center = [790, 450];
   var translate_x = center[0]-elemTransform[0]; 
   var translate_y = center[1]-elemTransform[1] -30;
   console.log(center)
