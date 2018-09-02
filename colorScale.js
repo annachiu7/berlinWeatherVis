@@ -23,8 +23,8 @@ linearGradient.selectAll("stop")
 //Draw the rectangle and fill with gradient
 centerGroup.append("rect")
     .attr("width", 300)
-    .attr("height", 20)
-    .attr('x', 100)
+    .attr("height", 10)
+    .attr('x', 50)
     .attr('y', 0)
     .style("fill", "url(#linear-gradient)");
 
@@ -39,6 +39,6 @@ centerGroup.selectAll('text')
     .attr('alignment-baseline', 'middle')
     .attr('fill', '#ccc')
     .style('font-size', '10px')
-    .attr('x', function(d,i){return 100+i*76;})
+    .attr('x', function(d,i){return 50+i*76;})
     .attr('y', -5)
     .text(function(d,i){return celcius[i] + String.fromCharCode(176) + 'C';})
