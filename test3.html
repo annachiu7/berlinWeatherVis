@@ -6,8 +6,11 @@
 	document.getElementById("hideAll").style.display = "block";
 </script> 
 
-<!-- Range slider style -->
 <style type="text/css">
+	svg {
+		z-index: 3;
+	}
+
 	#container{
 		height: 30px;  
 	}
@@ -25,61 +28,53 @@
 		background-color: #F8F8FA;
 		padding: 30px;
 	}
-</style>
+	#hideAll
+	{
+	position: fixed;
+	left: 0px; 
+	right: 0px; 
+	top: 0px; 
+	bottom: 0px; 
+	background-color: rgb(63, 63, 63);
+	z-index: 99; /* Higher than anything else in the document */
 
+	}
+
+	div.tooltip {
+	display: block;
+	overflow: auto;
+	position: absolute;
+	text-align: center;
+	padding: 2px;
+	font: 12px sans-serif;
+	background: rgb(136, 136, 136);
+	border: 0px;
+	border-radius: 5px;
+	pointer-events: none;
+	}
+</style>
+	
+<div id="container"></div>
+<div id="range-label"></div>
 <svg width="1600" height="900"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="d3RangeSlider.js"></script>
 <script src="fisheye.js"></script>
 <link href="d3RangeSlider.css" rel="stylesheet">
-<style>   
-#hideAll
-{
-   position: fixed;
-   left: 0px; 
-   right: 0px; 
-   top: 0px; 
-   bottom: 0px; 
-   background-color: rgb(63, 63, 63);
-   z-index: 99; /* Higher than anything else in the document */
 
-}
 
-div.tooltip {
-  display: block;
-  overflow: auto;
-  position: absolute;
-  text-align: center;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: rgb(136, 136, 136);
-  border: 0px;
-  border-radius: 5px;
-  pointer-events: none;
-}
 
-</style>
 
-<div class="container">
+<script type="text/javascript">
+	var slider = createD3RangeSlider(2, 31, "#container", false);
 
-		<div class="section">
-	
-			<div id="container"></div>
-			<div id="range-label"></div>
-	
-			<script type="text/javascript">
-				var slider = createD3RangeSlider(2, 31, "#container", false);
-	
-				slider.onChange(function(newRange){
-					d3.select("#range-label").html(newRange.begin + ". &mdash; " + newRange.end + ".8.2018");
-				});
-	
-				slider.range(2,9);
-			</script>
-		</div>
-	
-	
-</div>
+	slider.onChange(function(newRange){
+		d3.select("#range-label").html(newRange.begin + ". &mdash; " + newRange.end + ".8.2018");
+	});
+
+	//slider.range(2,12);
+</script>
+
 
 <script>
 
@@ -197,7 +192,7 @@ for (let index = 0, offset_x = 200, offset_y = 220; index < citys.length; index+
 									})
                 .on("click", function(e){
                   transformed = getElementTransformInfo(this);
-                  zoomed? (zoomTo(1, transformed)) : (zoomTo(2, transformed));
+                  zoomed? (zoomTo(1, transformed)) : (zoomTo(2.5, transformed));
                   });
 		
 		var center_text = cityGroup.append('text')
@@ -303,42 +298,6 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 							}
 						});
 
-		//If slider is moved, z.begin and z.end are the new values.
-		// slider.onChange(function(z){
-		// 	let all = document.querySelectorAll('.day');
-		// 	let class_name = "d_" + today;
-
-		// 	let selected = [];
-		// 	let not_selected = [];
-
-		// 	all.forEach(function (e) {
-		// 							e.setAttribute("style", "display: visible");
-		// 						});
-
-		// 	for (let outter = 0; outter < all.length; ++outter) {
-		// 		if (all[outter].classList[0] === class_name) {
-		// 			selected.push(all[outter]);
-		// 		}else{
-		// 			not_selected.push(all[outter]);
-		// 		}
-		// 	}
-			
-
-		// 	if(z.begin > today||z.end < today) {
-		// 		console.log('tag ' + today + ' nicht drin')
-		// 		selected.forEach(function (e) {
-		// 							e.setAttribute("style", "display: none");
-		// 						});
-		// 	} else {
-		// 		console.log('tag ' + today + ' drin')
-		// 		/*
-		// 		not_selected.forEach(function (e) {
-		// 							e.setAttribute("style", "display: visible");
-		// 						});
-		// 		*/
-		// 	}
-		// })
-
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
              .attr('fill', color(min_max_temp[0] + 40))
              .style('stroke','white')
@@ -396,7 +355,7 @@ function getElementTransformInfo(d) {
 }
 
 function zoomTo(scale, elemTransform) {
-  var center = [790, 450];
+  var center = [810, 420];
   var translate_x = center[0]-elemTransform[0]; 
   var translate_y = center[1]-elemTransform[1] -30;
   console.log(center)

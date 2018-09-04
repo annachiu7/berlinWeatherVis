@@ -1,15 +1,19 @@
 .slider-container {
-    background-color: #f2f2f9;
+    background-color: #f2f2f991;
+    position: relative;
+    border-radius: 5px;
+    z-index: 2;
 }
 
 .slider {
     position: absolute;
-    border: 1px solid #AAB;
-    background: #BCE;
+    background: rgb(255, 255, 255);
     height: 100%;
     width: 58px;
     top: 0px;
     cursor: move;
+    border-radius: 8px;
+    z-index: 2;
     /*margin:-0.5px;*/
 }
 
@@ -26,14 +30,18 @@
     -webkit-box-sizing: border-box;
 }
 
+.handle .EE .WW {
+    z-index: 1;
+}
+
 .slider .EE {
-    right: -4px;
+    right: -1px;
     cursor: e-resize;
 }
 
 .slider .WW {
     cursor: w-resize;
-    left: -4px;
+    left: -1px;
 }
 
 .slider .EE, .slider .WW {
@@ -54,3 +62,6 @@
 }
 
 
+#container {
+    display: block;
+}
