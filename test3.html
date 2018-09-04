@@ -304,40 +304,40 @@ function calcMinMaxTemp(today, d, cityGroup, endDist) {
 						});
 
 		//If slider is moved, z.begin and z.end are the new values.
-		slider.onChange(function(z){
-			let all = document.querySelectorAll('.day');
-			let class_name = "d_" + today;
+		// slider.onChange(function(z){
+		// 	let all = document.querySelectorAll('.day');
+		// 	let class_name = "d_" + today;
 
-			let selected = [];
-			let not_selected = [];
+		// 	let selected = [];
+		// 	let not_selected = [];
 
-			all.forEach(function (e) {
-									e.setAttribute("style", "display: visible");
-								});
+		// 	all.forEach(function (e) {
+		// 							e.setAttribute("style", "display: visible");
+		// 						});
 
-			for (let outter = 0; outter < all.length; ++outter) {
-				if (all[outter].classList[0] === class_name) {
-					selected.push(all[outter]);
-				}else{
-					not_selected.push(all[outter]);
-				}
-			}
+		// 	for (let outter = 0; outter < all.length; ++outter) {
+		// 		if (all[outter].classList[0] === class_name) {
+		// 			selected.push(all[outter]);
+		// 		}else{
+		// 			not_selected.push(all[outter]);
+		// 		}
+		// 	}
 			
 
-			if(z.begin > today||z.end < today) {
-				console.log('tag ' + today + ' nicht drin')
-				selected.forEach(function (e) {
-									e.setAttribute("style", "display: none");
-								});
-			} else {
-				console.log('tag ' + today + ' drin')
-				/*
-				not_selected.forEach(function (e) {
-									e.setAttribute("style", "display: visible");
-								});
-				*/
-			}
-		})
+		// 	if(z.begin > today||z.end < today) {
+		// 		console.log('tag ' + today + ' nicht drin')
+		// 		selected.forEach(function (e) {
+		// 							e.setAttribute("style", "display: none");
+		// 						});
+		// 	} else {
+		// 		console.log('tag ' + today + ' drin')
+		// 		/*
+		// 		not_selected.forEach(function (e) {
+		// 							e.setAttribute("style", "display: visible");
+		// 						});
+		// 		*/
+		// 	}
+		// })
 
 		one_tempr_clr.append("path").attr("d", low_temp_arc)
              .attr('fill', color(min_max_temp[0] + 40))
@@ -413,6 +413,30 @@ function round(value, decimals) {
 window.onload = function() 
   { document.getElementById("hideAll").style.display = "none"; }
 
+
+slider.onChange(function(fade_out){
+	// this is ultra terrible code (but we're too lazy)
+	for(let day = 2; day < fade_out.begin+1; day++) {
+		var list = document.getElementsByClassName("d_" + day);
+		for(let i = 0; i < 20; i++) {
+			list[i].style.display = "none";
+		}
+	}
+	for(let day = 31; day > fade_out.end-1; day--) {
+		var list = document.getElementsByClassName("d_" + day);
+		for(let i = 0; i < 20; i++) {
+			list[i].style.display = "none";
+		}
+	}
+
+	for(let day = fade_out.begin; day < fade_out.end+1; day++) {
+		var list = document.getElementsByClassName("d_" + day);
+		for(let i = 0; i < 20; i++) {
+			list[i].style.display = "inline";
+		} 
+	}
+
+})
 
 </script>
 
